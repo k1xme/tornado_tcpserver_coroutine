@@ -11,6 +11,8 @@ now = datetime.now
 class Device(Base):
     """docstring for Terminal"""
     __tablename__ = 'fthfldev'
+
+
     id = Column(Integer, primary_key=True)
     devname = Column(String(60), nullable=False)
     portid = Column(String(30), nullable=False)

@@ -15,3 +15,10 @@ In the root of Pull, execute `pip install -r requirements.txt`.
 4. Execute `alembic upgrade head`
 
 Note: You need to execute **Step 3** and **Step 4** every time you change the models. 
+
+### For integrating RabbitMQ to Tornado
+#### References:
+[Tornado Adapter API](http://pika.readthedocs.org/en/0.9.13/modules/adapters/tornado.html)
+
+[Tornado Consumer Example](http://pika.readthedocs.org/en/0.9.13/examples/tornado_consumer.html)
+

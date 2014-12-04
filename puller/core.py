@@ -4,7 +4,8 @@ from tornado.concurrent import return_future, Future
 from puller import logger, session
 from puller.models import Device, DeviceData
 from puller.hmframe import insert_crc, bytes_to_float, bytes_to_double, \
-    unpack_frame, parse_data, compute_hisdata_addr, DATA_LENGTHS, gen_collect_cmd_frame
+    unpack_frame, parse_data, compute_hisdata_addr, DATA_LENGTHS, \
+    gen_collect_cmd_frame
 from bitstring import BitArray, Bits, pack
 from socket import inet_ntoa
 import struct, datetime
@@ -55,11 +56,11 @@ class Puller(tcpserver.TCPServer):
         try:
             timestamp = now() if data_type==4 and not chktime else chktime
             recv_frame = BitArray()
-            request_frame = gen_collect_cmd_frame(device.devaddr, data_type, interval,
-                    timestamp)
+            request_frame = gen_collect_cmd_frame(device.devaddr, data_type,
+                interval, timestamp)
 
             # sends out the inqury command frame.
-            device.stream.write(request_frame.bytes)
+            yield device.stream.write(request_frame.bytes)
 
             # receives the first 4 leading bytes
             recv_bytes = yield device.stream.read_bytes(4)
@@ -102,7 +103,7 @@ class Puller(tcpserver.TCPServer):
             raise Exception('No such device')
 
         try:
-            yield device.write(message)
+            yield device.stream.write(message)
         except StreamClosedError:
             logger.exception('Device(%s) lost connections' % device.portid)
             self.device_dict.pop(device.portid)

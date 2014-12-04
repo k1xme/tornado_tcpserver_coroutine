@@ -116,7 +116,7 @@ def unpack_frame(bdata, info_len=32):
 
 def parse_data(bdata, type=4, jsonify=True):
     try:
-        if type == 4:
+        if type == HISTORY_DATA:
             total_flow = bytes_to_double(bdata[4:12])
             flow = bytes_to_float(bdata[12:16])
             tempture = bytes_to_float(bdata[16:20])
@@ -166,7 +166,8 @@ def compute_hisdata_addr(interval, year, month, day, hour, minute):
         else:
             monthtemp = 1
 
-        data_addr = ((monthtemp - 1) * 144 * 31 + (day - 1) * 144 + hour * 6 + (minute / 10)) * 32
+        data_addr = ((monthtemp - 1) * 144 * 31 + (day - 1) * 144 \
+                        + hour * 6 + (minute / 10)) * 32
     
     elif interval == 60:
         data_addr = ((month - 1) * 24 * 31 + (day - 1) * 24 + hour) * 32
@@ -212,11 +213,11 @@ def gen_collect_cmd_frame(device_addr, data_type, interval=1, timestamp=None):
         data_length = DATA_LENGTHS[data_type]
     
         # pack all the fields into a frame.
-        request_frame = pack(frame_format, frame_header,frame_length, device_addr,
-            origin_addr, cmd, para_1, para_2, para_3, data_length)
+        request_frame = pack(frame_format, frame_header,frame_length,
+            device_addr, origin_addr, cmd, para_1, para_2, para_3, data_length)
         # generate CRC and insert it at the end of the frame.
         insert_crc(request_frame)
     except Exception as e:
         raise e
 
-    return request_frame
+    return request_frame # BitArray
